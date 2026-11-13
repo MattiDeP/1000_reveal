@@ -7,7 +7,11 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Data di oggi in formato YYYY-MM-DD (fuso locale)
 const oggi = new Date().toLocaleDateString('en-CA');
-document.getElementById('data-turno').value = oggi;
+const inputData = document.getElementById('data-turno');
+inputData.value = oggi;
+inputData.readOnly = true;
+inputData.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+
 document.getElementById('data-odierna-badge').textContent = `Oggi è ${new Date().toLocaleDateString('it-IT')}`;
 
 let revealGiaFattoOggi = false;
@@ -137,7 +141,7 @@ function popolaTabella(records) {
 // ==========================================
 document.getElementById('turno-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  if (revealGiaFattoOggi) return; // Doppio check di sicurezza
+  if (revealGiaFattoOggi) return;
 
   const btn = document.getElementById('btn-salva');
   btn.disabled = true;
@@ -152,7 +156,7 @@ document.getElementById('turno-form').addEventListener('submit', async (e) => {
     unita_treno: unitaScelta,
     numero_treno: document.getElementById('numero-treno').value.trim(),
     operatore: document.getElementById('operatore').value.trim(),
-    data_turno: document.getElementById('data-turno').value
+    data_turno: oggi // Forza sempre la data odierna
   };
 
   const { error } = await db.from('turnazioni').insert([nuovoRecord]);
@@ -161,9 +165,8 @@ document.getElementById('turno-form').addEventListener('submit', async (e) => {
     alert('Errore durante il salvataggio: ' + error.message);
     gestisciStatoForm(false);
   } else {
-    document.getElementById('numero-treno').value = '';
-    if (unitaScelta === customInput.value.trim()) customInput.value = '';
-    caricaTurnazioni();
+    // Ricarica l'intera pagina dopo il salvataggio
+    window.location.reload();
   }
 });
 
