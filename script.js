@@ -12,8 +12,6 @@ inputData.value = oggi;
 inputData.readOnly = true;
 inputData.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
 
-document.getElementById('data-odierna-badge').textContent = `Oggi è ${new Date().toLocaleDateString('it-IT')}`;
-
 let revealGiaFattoOggi = false;
 
 // Gestione campo custom se selezionato "Altro"
